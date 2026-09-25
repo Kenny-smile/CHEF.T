@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CHEF. T | Delicious Meals</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #fff5ed;
+            color: #333;
+        }
+
+        header {
+            background: #8b2f23;
+            color: white;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-bar {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .search {
+            flex: 1;
+            display: flex;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            outline: none;
+            border-radius: 6px 0 0 6px;
+        }
+
+        .search button {
+            background: #f4c7a1;
+            color: #7a281d;
+            border: none;
+            padding: 0 18px;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cart-btn {
+            background: #f4c7a1;
+            color: #7a281d;
+            border: none;
+            padding: 11px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .categories {
+            max-width: 1200px;
+            margin: 15px auto 0;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .categories button {
+            background: white;
+            color: #8b2f23;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .categories button:hover {
+            background: #f4c7a1;
+        }
+
+        .page {
+            display: none;
+            max-width: 1200px;
+            margin: auto;
+            padding: 25px 15px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .hero {
+            background: #f4c7a1;
+            color: #7a281d;
+            padding: 45px 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 17px;
+        }
+
+        .section-title {
+            color: #7a281d;
+            margin-bottom: 20px;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 18px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 170px;
+            background: #fff0e4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 75px;
+        }
+
+        .product-info {
+            padding: 13px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .price {
+            color: #8b2f23;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .add-btn {
+            width: 100%;
+            background: #8b2f23;
+            color: white;
+            border: none;
+            padding: 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-btn:hover {
+            background: #6e241b;
+        }
+
+        .back-btn {
+            background: #8b2f23;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            color: #7a281d;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        footer {
+            background: #8b2f23;
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+            margin-top: 40px;
+        }
+
+        footer p {
+            margin: 6px 0;
+        }
+
+        @media (max-width: 900px) {
+            .products {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .top-bar {
+                flex-wrap: wrap;
+            }
+
+            .logo {
+                width: 100%;
+                text-align: center;
+            }
+
+            .search {
+                width: 100%;
+                order: 3;
+            }
+
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .product-image {
+                height: 140px;
+                font-size: 60px;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="top-bar">
+
+        <div class="logo">
+            CHEF. T
+        </div>
+
+        <div class="search">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search food..."
+            >
+
+            <button onclick="searchFood()">
+                Search
+            </button>
+
+        </div>
+
+        <button class="cart-btn" onclick="openOrder()">
+            🛒 Order (<span id="cartCount">0</span>)
+        </button>
+
+    </div>
+
+
+    <div class="categories">
+
+        <button onclick="goHome()">
+            Home
+        </button>
+
+        <button onclick="openCategory('Swallow')">
+            Swallow
+        </button>
+
+        <button onclick="openCategory('Rice')">
+            Rice
+        </button>
+
+        <button onclick="openCategory('Small Chops')">
+            Small Chops
+        </button>
+
+        <button onclick="openCategory('Cakes')">
+            Cakes
+        </button>
+
+        <button onclick="openCategory('Drinks')">
+            Drinks
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- HOME -->
+
+<section id="homePage" class="page active">
+
+    <div class="hero">
+
+        <h1>
+            Welcome to CHEF. T
+        </h1>
+
+        <p>
+            Delicious Meals • Cakes • Small Chops • Drinks
+        </p>
+
+    </div>
+
+    <h2 class="section-title">
+        Popular Items
+    </h2>
+
+    <div id="homeProducts" class="products">
+        <!-- Home products will appear here -->
+    </div>
+
+</section>
+
+
+<!-- CATEGORY PAGE -->
+
+<section id="categoryPage" class="page">
+
+    <button class="back-btn" onclick="goHome()">
+        ← Back Home
+    </button>
+
+    <h2 id="categoryTitle" class="page-title">
+        Category
+    </h2>
+
+    <div id="categoryProducts" class="products">
+        <!-- Category products will appear here -->
+    </div>
+
+</section>
+
+
+<!-- SEARCH PAGE -->
+
+<section id="searchPage" class="page">
+
+    <button class="back-btn" onclick="goHome()">
+        ← Back Home
+    </button>
+
+    <h2 class="page-title">
+        Search Results
+    </h2>
+
+    <div id="searchProducts" class="products">
+        <!-- Search results -->
+    </div>
+
+</section>
+<!-- ORDER PAGE -->
+
+<section id="orderPage" class="page">
+
+    <button class="back-btn" onclick="goHome()">
+        ← Continue Shopping
+    </button>
+
+    <div style="
+        background:white;
+        padding:25px;
+        border-radius:12px;
+        box-shadow:0 3px 10px rgba(0,0,0,0.08);
+        margin-bottom:25px;
+    ">
+
+        <h2 class="page-title">
+            Order Summary
+        </h2>
+
+        <div id="orderItems">
+
+            <!-- Ordered products will appear here -->
+
+        </div>
+
+        <div style="
+            border-top:1px solid #ddd;
+            margin-top:20px;
+            padding-top:20px;
+            text-align:right;
+            font-size:21px;
+            font-weight:bold;
+            color:#8b2f23;
+        ">
+
+            Total:
+            ₦<span id="orderTotal">0</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- CUSTOMER DETAILS -->
+
+    <div class="order-form" style="
+        background:white;
+        padding:25px;
+        border-radius:12px;
+        box-shadow:0 3px 10px rgba(0,0,0,0.08);
+    ">
+
+        <h2 class="page-title">
+            Customer Details
+        </h2>
+
+        <input
+            type="text"
+            id="customerName"
+            placeholder="Your Name"
+        >
+
+        <input
+            type="tel"
+            id="customerPhone"
+            placeholder="Phone Number"
+        >
+
+        <select
+            id="orderType"
+            style="
+                width:100%;
+                padding:12px;
+                margin-bottom:12px;
+                border:1px solid #ddd;
+                border-radius:6px;
+                background:white;
+                font-size:15px;
+            "
+        >
+
+            <option value="">
+                Select Order Type
+            </option>
+
+            <option value="Delivery">
+                Delivery
+            </option>
+
+            <option value="Pickup">
+                Pickup
+            </option>
+
+        </select>
+
+        <textarea
+            id="customerAddress"
+            placeholder="Delivery Address"
+        ></textarea>
+
+        <button
+            class="order-btn"
+            onclick="placeOrder()"
+        >
+            Place Order Through WhatsApp
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        <strong>CHEF. T</strong>
+    </p>
+
+    <p>
+        Delicious Meals • Cakes • Small Chops • Drinks
+    </p>
+
+    <p>
+        © 2026 CHEF. T. All Rights Reserved.
+    </p>
+
+</footer>
+
+
+<script>
+
+    /* =========================
+       CART
+    ========================= */
+
+    let cart = [];
+
+
+    /* =========================
+       PAGE NAVIGATION
+    ========================= */
+
+    function hidePages() {
+
+        document.getElementById("homePage")
+            .classList.remove("active");
+
+        document.getElementById("categoryPage")
+            .classList.remove("active");
+
+        document.getElementById("searchPage")
+            .classList.remove("active");
+
+        document.getElementById("orderPage")
+            .classList.remove("active");
+
+    }
+
+
+    function goHome() {
+
+        hidePages();
+
+        document.getElementById("homePage")
+            .classList.add("active");
+
+        window.scrollTo(0, 0);
+
+    }
+
+
+    function openCategory(category) {
+
+        hidePages();
+
+        document.getElementById("categoryPage")
+            .classList.add("active");
+
+        document.getElementById("categoryTitle")
+            .textContent = category;
+
+        showCategoryProducts(category);
+
+        window.scrollTo(0, 0);
+
+    }
+
+
+    function openOrder() {
+
+        hidePages();
+
+        document.getElementById("orderPage")
+            .classList.add("active");
+
+        displayOrder();
+
+        window.scrollTo(0, 0);
+
+    }
+
+
+    /* =========================
+       ADD TO ORDER
+    ========================= */
+
+    function addToOrder(name, price, sticker) {
+
+        let existing = cart.find(function(item) {
+            return item.name === name;
+        });
+
+
+        if (existing) {
+
+            existing.quantity++;
+
+        } else {
+
+            cart.push({
+
+                name: name,
+
+                price: price,
+
+                quantity: 1,
+
+                sticker: sticker
+
+            });
+
+        }
+
+
+        updateCartCount();
+
+        alert(name + " added to your order!");
+
+    }
+
+
+    /* =========================
+       PLUS
+    ========================= */
+
+    function increaseQuantity(index) {
+
+        cart[index].quantity++;
+
+        updateCartCount();
+
+        displayOrder();
+
+    }
+
+
+    /* =========================
+       MINUS
+    ========================= */
+
+    function decreaseQuantity(index) {
+
+        if (cart[index].quantity > 1) {
+
+            cart[index].quantity--;
+
+        } else {
+
+            cart.splice(index, 1);
+
+        }
+
+
+        updateCartCount();
+
+        displayOrder();
+
+    }
+
+
+    /* =========================
+       CART COUNT
+    ========================= */
+
+    function updateCartCount() {
+
+        let totalQuantity = 0;
+
+        cart.forEach(function(item) {
+
+            totalQuantity += item.quantity;
+
+        });
+
+
+        document.getElementById("cartCount")
+            .textContent = totalQuantity;
+
+    }
+
+
+    /* =========================
+       DISPLAY ORDER
+    ========================= */
+
+    function displayOrder() {
+
+        const container =
+            document.getElementById("orderItems");
+
+        const totalBox =
+            document.getElementById("orderTotal");
+
+
+        if (cart.length === 0) {
+
+            container.innerHTML = `
+                <p style="
+                    text-align:center;
+                    padding:30px;
+                    color:#777;
+                ">
+                    Your order is empty.
+                </p>
+            `;
+
+            totalBox.textContent = "0";
+
+            return;
+
+        }
+
+
+        let total = 0;
+
+
+        container.innerHTML = cart.map(function(item, index) {
+
+            let amount =
+                item.price * item.quantity;
+
+            total += amount;
+
+
+            return `
+
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    gap:12px;
+                    padding:15px 0;
+                    border-bottom:1px solid #eee;
+                ">
+
+                    <div style="
+                        width:65px;
+                        height:65px;
+                        background:#fff0e4;
+                        border-radius:10px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        font-size:38px;
+                        flex-shrink:0;
+                    ">
+                        ${item.sticker}
+                    </div>
+
+
+                    <div style="flex:1;">
+
+                        <div style="
+                            font-weight:bold;
+                            color:#333;
+                            margin-bottom:5px;
+                        ">
+                            ${item.name}
+                        </div>
+
+                        <div style="
+                            color:#8b2f23;
+                            font-weight:bold;
+                        ">
+                            ₦${item.price.toLocaleString()}
+                        </div>
+
+                    </div>
+
+
+                    <div style="
+                        display:flex;
+                        align-items:center;
+                        gap:8px;
+                    ">
+
+                        <button
+                            onclick="decreaseQuantity(${index})"
+                            style="
+                                width:32px;
+                                height:32px;
+                                border:none;
+                                border-radius:6px;
+                                background:#8b2f23;
+                                color:white;
+                                font-size:20px;
+                                cursor:pointer;
+                            "
+                        >
+                            −
+                        </button>
+
+
+                        <strong>
+                            ${item.quantity}
+                        </strong>
+
+
+                        <button
+                            onclick="increaseQuantity(${index})"
+                            style="
+                                width:32px;
+                                height:32px;
+                                border:none;
+                                border-radius:6px;
+                                background:#8b2f23;
+                                color:white;
+                                font-size:20px;
+                                cursor:pointer;
+                            "
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+
+                    <div style="
+                        min-width:90px;
+                        text-align:right;
+                        font-weight:bold;
+                    ">
+                        ₦${amount.toLocaleString()}
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+
+        totalBox.textContent =
+            total.toLocaleString();
+
+    }
+
+
+    /* =========================
+       WHATSAPP ORDER
+    ========================= */
+
+    function placeOrder() {
+
+        if (cart.length === 0) {
+
+            alert("Please add something to your order first.");
+
+            return;
+
+        }
+
+
+        const name =
+            document.getElementById("customerName").value.trim();
+
+        const phone =
+            document.getElementById("customerPhone").value.trim();
+
+        const orderType =
+            document.getElementById("orderType").value;
+
+        const address =
+            document.getElementById("customerAddress").value.trim();
+
+
+        if (!name || !phone || !orderType || !address) {
+
+            alert("Please fill in all your details.");
+
+            return;
+
+        }
+
+
+        let message =
+            "Hello CHEF. T!%0A%0A";
+
+        message +=
+            "I would like to place an order.%0A%0A";
+
+
+        let total = 0;
+
+
+        cart.forEach(function(item) {
+
+            let amount =
+                item.price * item.quantity;
+
+            total += amount;
+
+
+            message +=
+                item.name +
+                " x" +
+                item.quantity +
+                " = ₦" +
+                amount.toLocaleString() +
+                "%0A";
+
+        });
+
+
+        message +=
+            "%0ATotal: ₦" +
+            total.toLocaleString();
+
+        message +=
+            "%0AOrder Type: " +
+            orderType;
+
+        message +=
+            "%0ACustomer Name: " +
+            name;
+
+        message +=
+            "%0APhone: " +
+            phone;
+
+        message +=
+            "%0AAddress: " +
+            address;
+
+
+        /* CHANGE THIS TO CHEF. T'S REAL WHATSAPP NUMBER */
+
+        const whatsappNumber =
+            "2348029853082";
+
+
+        window.open(
+            "https://wa.me/" +
+            whatsappNumber +
+            "?text=" +
+            message,
+            "_blank"
+        );
+
+    }
+
+</script>
+<style>
+    #orderPage input,
+    #orderPage select,
+    #orderPage textarea {
+        width: 100%;
+        padding: 13px;
+        margin-bottom: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 15px;
+        font-family: Arial, sans-serif;
+    }
+
+    #orderPage textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .order-btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        background: #8b2f23;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .order-btn:hover {
+        background: #6f241b;
+    }
+
+    .quantity-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 6px;
+        background: #f4c7a1;
+        color: #7a281d;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .sticker {
+        font-size: 45px;
+    }
+</style>
+
+<script>
+
+    /* =========================
+       CHEF. T PRODUCTS
+    ========================= */
+
+    const products = {
+
+        Swallow: [
+
+            { name: "Eba", price: 1500, sticker: "🥣", image: "images/eba.jpg" },
+            { name: "Pounded Yam", price: 2500, sticker: "🥣", image: "images/pounded yam.jpg" },
+            { name: "Amala", price: 2000, sticker: "🥣", image: "images/2 amala.jpg" },
+            { name: "Semo", price: 2000, sticker: "🥣", image: "images/2 semo.jpg" },
+            { name: "Wheat", price: 2000, sticker: "🌾", image: "images/wheat.jpg" },
+            { name: "Fufu", price: 1800, sticker: "🥣", image: "images/2 fufu.jpg" },
+            { name: "Oat Fufu", price: 2500, sticker: "🥣", image: "images/oat fufu.jpg" },
+            { name: "Plantain Fufu", price: 2500, sticker: "🍌", image: "images/plaintain fufu.jpg" },
+            { name: "Cassava Fufu", price: 1800, sticker: "🥣", image: "images/cassava fufu.jpg" },
+            { name: "Yam Flour", price: 2000, sticker: "🌾", image: "images/yam flour.jpg" },
+            { name: "Eba + Soup", price: 3500, sticker: "🍲", image: "images/white eba.jpg" },
+            { name: "Pounded Yam + Soup", price: 4500, sticker: "🍲", image: "images/2 pounded yam.jpg" },
+            { name: "Amala + Soup", price: 4000, sticker: "🍲", image: "images/amala.jpg" },
+            { name: "Semo + Soup", price: 4000, sticker: "🍲", image: "images/semo.jpg" },
+            { name: "Fufu + Soup", price: 3800, sticker: "🍲", image: "images/fufu.jpg" }
+
+        ],
+
+        Rice: [
+
+            { name: "Jollof Rice", price: 3000, sticker: "🍚", image: "images/jollof rice.jpg" },
+            { name: "Fried Rice", price: 3500, sticker: "🍚", image: "images/fried rice.jpg" },
+            { name: "Coconut Rice", price: 3500, sticker: "🥥", image: "images/coconut rice.jpg" },
+            { name: "Ofada Rice", price: 4000, sticker: "🍚", image: "images/ofada rice.jpg" },
+            { name: "White Rice & Stew", price: 3000, sticker: "🍚", image: "images/whie rice and stew.jpg" },
+            { name: "Native Rice", price: 3500, sticker: "🍚", image: "images/native rice.jpg" },
+            { name: "Basmati Jollof", price: 4000, sticker: "🍚", image: "images/basmatic rice.jpg" },
+            { name: "Chinese Fried Rice", price: 4500, sticker: "🍚", image: "images/chinesefried rice.jpg" },
+            { name: "Party Jollof Rice", price: 3500, sticker: "🍚", image: "images/party jollof rice.jpg" },
+            { name: "Vegetable Rice", price: 3500, sticker: "🥕", image: "images/vegetables rice.jpg" },
+            { name: "Egg Fried Rice", price: 4000, sticker: "🍳", image: "images/egg fried rice.jpg" },
+            { name: "Chicken Fried Rice", price: 4500, sticker: "🍗", image: "images/chickenfried rice.jpg" },
+            { name: "Beef Jollof Rice", price: 4500, sticker: "🥩", image: "images/beef fried rice.jpg" },
+            { name: "Seafood Rice", price: 6000, sticker: "🦐", image: "images/seafood rice.jpg" },
+            { name: "Jollof Spaghetti", price: 3500, sticker: "🍝", image: "images/jollof spaghetti.jpg" }
+
+        ],
+
+        "Small Chops": [
+
+            { name: "Shawarma", price: 3500, sticker: "🌯", image: "images/shawarma.jpg" },
+            { name: "Pizza", price: 5000, sticker: "🍕", image: "images/pizzaa.jpg" },
+            { name: "Puff-Puff", price: 2000, sticker: "🍩", image: "images/puff puff.jpg" },
+            { name: "Samosa", price: 2500, sticker: "🥟", image: "images/samosa.jpg" },
+            { name: "Spring Rolls", price: 2500, sticker: "🥠", image: "images/spring roll.jpg" },
+            { name: "Chicken Wings", price: 4500, sticker: "🍗", image: "images/chicken wings.jpg" },
+            { name: "Chicken Pie", price: 2500, sticker: "🥧", image: "images/chicken pie.jpg" },
+            { name: "Meat Pie", price: 2500, sticker: "🥧", image: "images/meat pie.jpg" },
+            { name: "Sausage Roll", price: 2000, sticker: "🌭", image: "images/roll.jpg" },
+            { name: "Doughnut", price: 2000, sticker: "🍩", image: "images/doughnut.jpg" },
+            { name: "Chin Chin", price: 1500, sticker: "🍪", image: "images/chin chin.jpg" },
+            { name: "Peppered Gizzard", price: 4000, sticker: "🍗", image: "images/peppred gizzard.jpg" },
+            { name: "Peppered Chicken", price: 4500, sticker: "🍗", image: "images/peppred chicken.jpg" },
+            { name: "Burger", price: 4500, sticker: "🍔", image: "images/burger.jpg" },
+            { name: "French Fries", price: 2500, sticker: "🍟", image: "images/french fries.jpg" }
+
+        ],
+
+        Cakes: [
+
+            { name: "Vanilla Cake", price: 15000, sticker: "🍰", image: "images/vanilla  cake.jpg" },
+            { name: "Chocolate Cake", price: 18000, sticker: "🍫", image: "images/chocolate cake.jpg" },
+            { name: "Red Velvet Cake", price: 20000, sticker: "🍰", image: "images/red velvet.jpg" },
+            { name: "Carrot Cake", price: 18000, sticker: "🥕", image: "images/carrot cake.jpg" },
+            { name: "Marble Cake", price: 17000, sticker: "🍰", image: "images/marble cake.jpg" },
+            { name: "Strawberry Cake", price: 20000, sticker: "🍓", image: "images/strawberry.jpg" },
+            { name: "Oreo Cake", price: 22000, sticker: "🍪", image: "images/oreo.jpg" },
+            { name: "Birthday Cake", price: 25000, sticker: "🎂", image: "images/birthday cake.jpg" },
+            { name: "Buttercream Cake", price: 22000, sticker: "🎂", image: "images/butter cream.jpg" },
+            { name: "Cupcake Box", price: 10000, sticker: "🧁", image: "images/cup cake.jpeg" },
+            { name: "Wedding Cake", price: 50000, sticker: "🎂", image: "images/wedding cake.jpg" },
+            { name: "Fruit Cake", price: 20000, sticker: "🍓", image: "images/fruit cake.jpg" },
+            { name: "Lemon Cake", price: 17000, sticker: "🍋", image: "images/lemon cake.jpg" },
+            { name: "Rainbow Cake", price: 22000, sticker: "🌈", image: "images/rainbow cake.jpg" },
+            { name: "Red & Gold Cake", price: 28000, sticker: "🎂", image: "images/red and gold.jpg" }
+
+        ],
+
+        Drinks: [
+
+            { name: "Chapman", price: 2500, sticker: "🍹", image: "images/champ man.jpg" },
+            { name: "Zobo", price: 1500, sticker: "🥤", image: "images/z0b0.jpg" },
+            { name: "Pineapple Juice", price: 2000, sticker: "🍍", image: "images/pineapple juice.jpg" },
+            { name: "Orange Juice", price: 2000, sticker: "🍊", image: "images/orange juice.png" },
+            { name: "Watermelon Juice", price: 2000, sticker: "🍉", image: "images/water melon.jpg" },
+            { name: "Mango Juice", price: 2000, sticker: "🥭", image: "images/mango.jpg" },
+            { name: "Fruit Punch", price: 2500, sticker: "🍹", image: "images/fruitt punch.jpg" },
+            { name: "Lemonade", price: 2000, sticker: "🍋", image: "images/lemonade.jpg" },
+            { name: "Smoothie", price: 3000, sticker: "🥤", image: "images/smoothie.jpg" },
+            { name: "Milkshake", price: 3500, sticker: "🥛", image: "images/milk shake.jpg" },
+            { name: "Coke", price: 1000, sticker: "🥤", image: "images/coca cola.jpg" },
+            { name: "Fanta", price: 1000, sticker: "🥤", image: "images/fanta.jpg" },
+            { name: "Sprite", price: 1000, sticker: "🥤", image: "images/Sprite.jpg" },
+            { name: "Bottled Water", price: 700, sticker: "💧", image: "images/bottled water.jpg" },
+            { name: "Malt", price: 1500, sticker: "🥤", image: "images/malt.jpg" }
+
+        ]
+    };
+
+
+    /* =========================
+       CREATE PRODUCT CARD
+    ========================= */
+
+    function productCard(product) {
+
+        let visual = "";
+
+        if (product.image !== "") {
+
+            visual = `
+                <img
+                    src="${product.image}"
+                    alt="${product.name}"
+                    style="
+                        width:100%;
+                        height:100%;
+                        object-fit:cover;
+                        border-radius:10px;
+                    "
+                >
+            `;
+
+        } else {
+
+            visual = `
+                <span class="sticker">
+                    ${product.sticker}
+                </span>
+            `;
+        }
+
+        return `
+            <div class="product-card">
+
+                <div class="product-image">
+                    ${visual}
+                </div>
+
+                <div class="product-info">
+
+                    <div class="product-name">
+                        ${product.name}
+                    </div>
+
+                    <div class="price">
+                        ₦${product.price.toLocaleString()}
+                    </div>
+
+                    <button
+                        class="add-btn"
+                        onclick="addToOrder(
+                            '${product.name}',
+                            ${product.price},
+                            '${product.sticker}'
+                        )"
+                    >
+                        Add to Order
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    /* =========================
+       HOME PAGE
+       5 FOOD PICTURES
+    ========================= */
+
+    
+function loadHomeProducts() {
+
+    const featuredProducts = [
+
+        {
+            name: "Jollof Rice",
+            price: 3000,
+            sticker: "🍚",
+            image: "images/jollof.jpg"
+        },
+
+        {
+            name: "Peppered Chicken",
+            price: 4500,
+            sticker: "🍗",
+            image: "images/peppred.jpg"
+        },
+
+        {
+            name: "Pizza",
+            price: 5000,
+            sticker: "🍕",
+            image: "images/pizza.jpg"
+        },
+
+        {
+            name: "Birthday Cake",
+            price: 25000,
+            sticker: "🎂",
+            image: "images/cake.jpg"
+        },
+
+        {
+            name: "Chapman",
+            price: 2500,
+            sticker: "🍹",
+            image: "images/chapman.jpg"
+        }
+
+    ];
+
+    document.getElementById("homeProducts").innerHTML =
+        featuredProducts.map(productCard).join("");
+}
+
+
+    /* =========================
+       CATEGORY PAGE
+    ========================= */
+
+    function showCategoryProducts(category) {
+
+        const container =
+            document.getElementById("categoryProducts");
+
+        if (!products[category]) {
+
+            container.innerHTML =
+                "<p>Category not found.</p>";
+
+            return;
+        }
+
+        container.innerHTML =
+            products[category].map(productCard).join("");
+    }
+
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    function searchFood() {
+
+        const input =
+            document.getElementById("searchInput");
+
+        const searchText =
+            input.value.trim().toLowerCase();
+
+        if (searchText === "") {
+
+            goHome();
+            return;
+        }
+
+        hidePages();
+
+        document
+            .getElementById("searchPage")
+            .classList.add("active");
+
+        const allProducts =
+            Object.values(products).flat();
+
+        const results =
+            allProducts.filter(function(product) {
+
+                return product.name
+                    .toLowerCase()
+                    .includes(searchText);
+
+            });
+
+        const container =
+            document.getElementById("searchProducts");
+
+        if (results.length === 0) {
+
+            container.innerHTML = `
+                <div style="
+                    background:white;
+                    padding:30px;
+                    border-radius:12px;
+                    text-align:center;
+                    grid-column:1/-1;
+                ">
+                    <h3>No food found 😔</h3>
+                    <p>
+                        Try searching for rice, cake,
+                        shawarma, drinks or something else.
+                    </p>
+                </div>
+            `;
+
+        } else {
+
+            container.innerHTML =
+                results.map(productCard).join("");
+        }
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    /* =========================
+       SEARCH WITH ENTER KEY
+    ========================= */
+
+    document
+        .getElementById("searchInput")
+        .addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+
+                searchFood();
+
+            }
+
+        });
+
+
+    /* =========================
+       START HOME PAGE
+    ========================= */
+
+    loadHomeProducts();
+
+    updateCartCount();
+
+</script>
+
+</body>
+</html>
